@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from configparser import ConfigParser
 import os
 from baseSettings import application_path
+from utilities import get_tm1_config, str_to_bool
 
 FILE = os.path.join(application_path, 'config.ini')
 
@@ -14,7 +15,7 @@ class Ui_edit_window(object):
 
     def update_config_list(self) -> None:
         self.cmbConfig.clear()
-        conf_list = []
+        conf_list = ['']
         confg = ConfigParser()
         confg.read(FILE)
         for section in confg.sections():
@@ -22,7 +23,25 @@ class Ui_edit_window(object):
         self.cmbConfig.addItems(conf_list)
 
     def retrieve_config(self) -> None:
-        self.statusbar.showMessage("Changed")
+        self.statusbar.showMessage("Save Configuration to apply changes")
+        _instance = self.cmbConfig.currentText()
+        _dict = get_tm1_config(_instance)
+        _cloud = str_to_bool(_dict['cloud'])
+        if _cloud:
+            self.cmbCloud.setCurrentText('True')
+            self.lnAddress.setText(str(_dict['address']))
+            self.lnServer.setText(str(_dict['server']))
+        else:
+            self.cmbCloud.setCurrentText(_dict['cloud'])
+            self.lnAddress.setText(str(_dict['address']))
+            self.lnPort.setText(str(_dict['port']))
+            self.lnServer.setText(str(_dict['server']))
+            self.cmbSSL.setCurrentText(_dict['ssl'])
+            self.lnGateway.setText(str(_dict['gateway']))
+            self.lnNamespace.setText(str(_dict['namespace']))
+
+    def save_config(self) -> None:
+        self.statusbar.showMessage("Save Clicked")
 
     def setupUi(self, edit_window):
         edit_window.setObjectName("edit_window")
@@ -134,12 +153,13 @@ class Ui_edit_window(object):
         edit_window.setTabOrder(self.cmbSSL, self.lnNamespace)
         edit_window.setTabOrder(self.lnNamespace, self.lnGateway)
         edit_window.setTabOrder(self.lnGateway, self.btnSave)
-        bools = ['True', 'False']
+        bools = ['', 'True', 'False']
         self.cmbCloud.addItems(bools)
         self.cmbSSL.addItems(bools)
         self.statusbar.showMessage("Ready")
         self.update_config_list()
         self.cmbConfig.currentTextChanged.connect(self.retrieve_config)
+        self.btnSave.clicked.connect(self.save_config)
 
     def retranslateUi(self, edit_window):
         _translate = QtCore.QCoreApplication.translate

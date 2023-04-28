@@ -48,10 +48,10 @@ class Ui_create_window(object):
         self.conf[_instance] = self.config
         self.conf.write(open(FILE, 'a'))
         self.statusbar.showMessage("Configuration Saved")
-        self.cmbCloud.setCurrentText('True')
+        self.cmbCloud.setCurrentText('')
         self.lnAddress.setText('')
         self.lnPort.setText('')
-        self.cmbSSL.setCurrentText('True')
+        self.cmbSSL.setCurrentText('')
         self.lnAddress_3.setText('')
         self.lnAddress_2.setText('')
 
@@ -147,7 +147,7 @@ class Ui_create_window(object):
 
         self.retranslateUi(create_window)
         QtCore.QMetaObject.connectSlotsByName(create_window)
-        bools = ['True', 'False']
+        bools = ['', 'True', 'False']
         self.cmbCloud.addItems(bools)
         self.cmbSSL.addItems(bools)
         self.statusbar.showMessage("Ready")

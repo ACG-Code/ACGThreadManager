@@ -1,7 +1,7 @@
 import os.path
 from TM1py import TM1Service
 from PyQt5 import QtCore, QtGui, QtWidgets
-from baseSettings import application_path
+from baseSettings import application_path, APP_NAME
 from configparser import ConfigParser
 from create_window import Ui_create_window
 from edit_window import Ui_edit_window
@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
         self.cmbConfig.clear()
         config = ConfigParser()
         config.read(os.path.join(application_path, 'config.ini'))
-        sec_choices = []
+        sec_choices = ['']
         for section in config.sections():
             sec_choices.append(section)
         self.cmbConfig.addItems(sec_choices)
