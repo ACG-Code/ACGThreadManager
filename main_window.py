@@ -1,7 +1,42 @@
+import os.path
+from TM1py import TM1Service
 from PyQt5 import QtCore, QtGui, QtWidgets
+from baseSettings import application_path
+from configparser import ConfigParser
+from create_window import Ui_create_window
+from edit_window import Ui_edit_window
+from about_window import Ui_about_window
 
 
 class Ui_MainWindow(object):
+
+    def open_about(self) -> None:
+        self.window = QtWidgets.QDialog()
+        self.ui = Ui_about_window()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def open_setup(self) -> None:
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_create_window()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def open_edit(self) -> None:
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_edit_window()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def get_config(self) -> None:
+        self.cmbConfig.clear()
+        config = ConfigParser()
+        config.read(os.path.join(application_path, 'config.ini'))
+        sec_choices = []
+        for section in config.sections():
+            sec_choices.append(section)
+        self.cmbConfig.addItems(sec_choices)
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
@@ -107,9 +142,14 @@ class Ui_MainWindow(object):
         self.menuHelp.addAction(self.actionAbout)
         self.menubar.addAction(self.menuSetup.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
+        self.actionAbout.triggered.connect(self.open_about)
+        self.actionConfiguration.triggered.connect(self.open_setup)
+        self.actionEdit_Configuration.triggered.connect(self.open_edit)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.statusbar.showMessage("Ready")
+        self.get_config()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

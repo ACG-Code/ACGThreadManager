@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>edit_window</class>
+ <widget class="QMainWindow" name="edit_window">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -68,7 +68,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lnAddress_2">
+   <widget class="QLineEdit" name="lnGateway">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -78,7 +78,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lnAddress_3">
+   <widget class="QLineEdit" name="lnNamespace">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -276,6 +276,17 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>cmbConfig</tabstop>
+  <tabstop>cmbCloud</tabstop>
+  <tabstop>lnAddress</tabstop>
+  <tabstop>lnPort</tabstop>
+  <tabstop>lnServer</tabstop>
+  <tabstop>cmbSSL</tabstop>
+  <tabstop>lnNamespace</tabstop>
+  <tabstop>lnGateway</tabstop>
+  <tabstop>btnSave</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>

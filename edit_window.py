@@ -1,14 +1,36 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from configparser import ConfigParser
+import os
+from baseSettings import application_path
+
+FILE = os.path.join(application_path, 'config.ini')
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 520)
+class Ui_edit_window(object):
+
+    def __init__(self):
+        self.config = {}
+        self.conf = ConfigParser()
+
+    def update_config_list(self) -> None:
+        self.cmbConfig.clear()
+        conf_list = []
+        confg = ConfigParser()
+        confg.read(FILE)
+        for section in confg.sections():
+            conf_list.append(section)
+        self.cmbConfig.addItems(conf_list)
+
+    def retrieve_config(self) -> None:
+        self.statusbar.showMessage("Changed")
+
+    def setupUi(self, edit_window):
+        edit_window.setObjectName("edit_window")
+        edit_window.resize(800, 520)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/ACG.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(icon)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        edit_window.setWindowIcon(icon)
+        self.centralwidget = QtWidgets.QWidget(edit_window)
         self.centralwidget.setObjectName("centralwidget")
         self.cmbCloud = QtWidgets.QComboBox(self.centralwidget)
         self.cmbCloud.setGeometry(QtCore.QRect(20, 130, 181, 22))
@@ -25,12 +47,12 @@ class Ui_MainWindow(object):
         self.cmbSSL = QtWidgets.QComboBox(self.centralwidget)
         self.cmbSSL.setGeometry(QtCore.QRect(530, 230, 151, 22))
         self.cmbSSL.setObjectName("cmbSSL")
-        self.lnAddress_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lnAddress_2.setGeometry(QtCore.QRect(430, 330, 341, 20))
-        self.lnAddress_2.setObjectName("lnAddress_2")
-        self.lnAddress_3 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lnAddress_3.setGeometry(QtCore.QRect(20, 330, 341, 20))
-        self.lnAddress_3.setObjectName("lnAddress_3")
+        self.lnGateway = QtWidgets.QLineEdit(self.centralwidget)
+        self.lnGateway.setGeometry(QtCore.QRect(430, 330, 341, 20))
+        self.lnGateway.setObjectName("lnGateway")
+        self.lnNamespace = QtWidgets.QLineEdit(self.centralwidget)
+        self.lnNamespace.setGeometry(QtCore.QRect(20, 330, 341, 20))
+        self.lnNamespace.setObjectName("lnNamespace")
         self.btnSave = QtWidgets.QPushButton(self.centralwidget)
         self.btnSave.setGeometry(QtCore.QRect(330, 400, 111, 41))
         self.btnSave.setObjectName("btnSave")
@@ -93,38 +115,52 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.label_8.setFont(font)
         self.label_8.setObjectName("label_8")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        edit_window.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(edit_window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        edit_window.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(edit_window)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        edit_window.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(edit_window)
+        QtCore.QMetaObject.connectSlotsByName(edit_window)
+        edit_window.setTabOrder(self.cmbConfig, self.cmbCloud)
+        edit_window.setTabOrder(self.cmbCloud, self.lnAddress)
+        edit_window.setTabOrder(self.lnAddress, self.lnPort)
+        edit_window.setTabOrder(self.lnPort, self.lnServer)
+        edit_window.setTabOrder(self.lnServer, self.cmbSSL)
+        edit_window.setTabOrder(self.cmbSSL, self.lnNamespace)
+        edit_window.setTabOrder(self.lnNamespace, self.lnGateway)
+        edit_window.setTabOrder(self.lnGateway, self.btnSave)
+        bools = ['True', 'False']
+        self.cmbCloud.addItems(bools)
+        self.cmbSSL.addItems(bools)
+        self.statusbar.showMessage("Ready")
+        self.update_config_list()
+        self.cmbConfig.currentTextChanged.connect(self.retrieve_config)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, edit_window):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "ACG Thread Manager - Setup Connection"))
-        self.btnSave.setText(_translate("MainWindow", "Save Configuration"))
-        self.label.setText(_translate("MainWindow", "IBM Cloud"))
-        self.label_2.setText(_translate("MainWindow", "Address"))
-        self.label_3.setText(_translate("MainWindow", "HTTP Port Number"))
-        self.label_4.setText(_translate("MainWindow", "Instance Name"))
-        self.label_5.setText(_translate("MainWindow", "Use SSL"))
-        self.label_6.setText(_translate("MainWindow", "CAM Namespace ID"))
-        self.label_7.setText(_translate("MainWindow", "SSO Gateway"))
-        self.label_8.setText(_translate("MainWindow", "Choose Existing Configuration"))
+        edit_window.setWindowTitle(_translate("edit_window", "ACG Thread Manager - Setup Connection"))
+        self.btnSave.setText(_translate("edit_window", "Save Configuration"))
+        self.label.setText(_translate("edit_window", "IBM Cloud"))
+        self.label_2.setText(_translate("edit_window", "Address"))
+        self.label_3.setText(_translate("edit_window", "HTTP Port Number"))
+        self.label_4.setText(_translate("edit_window", "Instance Name"))
+        self.label_5.setText(_translate("edit_window", "Use SSL"))
+        self.label_6.setText(_translate("edit_window", "CAM Namespace ID"))
+        self.label_7.setText(_translate("edit_window", "SSO Gateway"))
+        self.label_8.setText(_translate("edit_window", "Choose Existing Configuration"))
 import resources_rc
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    edit_window = QtWidgets.QMainWindow()
+    ui = Ui_edit_window()
+    ui.setupUi(edit_window)
+    edit_window.show()
     sys.exit(app.exec_())
