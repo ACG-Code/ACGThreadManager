@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-from baseSettings import application_path
+from baseSettings import application_path, APP_NAME
 import os
 
 FILE = os.path.join(application_path, "config.ini")
@@ -13,7 +13,6 @@ def get_tm1_config(instance: str) -> dict:
     """
     _user = None
     _pass = None
-    base_url = None
     address = None
     port = None
     gateway = None
@@ -58,3 +57,63 @@ def get_tm1_config(instance: str) -> dict:
 
 def str_to_bool(response: str) -> bool:
     return response.lower() in ['y', 'yes', 't', 'true', '1', 'on']
+
+
+def retrieve_tm1_config(instance: str) -> dict:
+    """
+    Create dictionary to use for connecting to TM1PyService
+    :param instance: Config.ini section
+    :return: dictionary
+    """
+    base_url = None
+    address = None
+    port = None
+    gateway = None
+    namespace = None
+    ssl = False
+    _config = {}
+    config = ConfigParser()
+    config.read(FILE)
+    conf = dict(config.items(instance))
+    _cloud = str_to_bool(conf['cloud'])
+    if _cloud:
+        base_url = conf.get("address")
+    else:
+        address = conf.get("address")
+        port = conf.get("port")
+        ssl = conf.get("ssl")
+        gateway = conf.get("gateway")
+        if gateway == '':
+            gateway = None
+        namespace = conf.get("namespace")
+        if namespace == '':
+            namespace = None
+    if _cloud:
+        _config = {
+            'base_url': base_url,
+            'namespace': 'LDAP',
+            'ssl': True,
+            'verify': True,
+            'async_requests_mode': True,
+            'session_context': APP_NAME
+        }
+    else:
+        _config = {
+            'address': address,
+            'port': port,
+            'ssl': ssl,
+            'namespace': namespace,
+            'gateway': gateway,
+            'session_context': APP_NAME
+        }
+    return _config
+
+
+def get_sections() -> list:
+    sec_list = ['']
+    config = ConfigParser()
+    file = os.path.join(application_path, 'config.ini')
+    config.read(file)
+    for section in config.sections():
+        sec_list.append(section)
+    return sec_list

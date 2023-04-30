@@ -6,6 +6,7 @@ from configparser import ConfigParser
 from create_window import Ui_create_window
 from edit_window import Ui_edit_window
 from about_window import Ui_about_window
+from utilities import get_sections, retrieve_tm1_config
 
 
 class Ui_MainWindow(object):
@@ -30,12 +31,22 @@ class Ui_MainWindow(object):
 
     def get_config(self) -> None:
         self.cmbConfig.clear()
-        config = ConfigParser()
-        config.read(os.path.join(application_path, 'config.ini'))
-        sec_choices = ['']
-        for section in config.sections():
-            sec_choices.append(section)
-        self.cmbConfig.addItems(sec_choices)
+        sections = get_sections()
+        self.cmbConfig.addItems(sections)
+
+    def get_threads(self) -> None:
+        _instance = self.cmbConfig.currentText()
+        _dict = retrieve_tm1_config(_instance)
+        _user = self.lnUser.text()
+        _password = self.lnPassword.text()
+        thread_list = []
+        _dict['user'] = _user
+        _dict['password'] = _password
+        with TM1Service(**_dict) as tm1:
+            threads = tm1.monitoring.get_threads()
+            for thread in threads:
+                thread_list.append(thread)
+        print(thread_list)
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -145,6 +156,7 @@ class Ui_MainWindow(object):
         self.actionAbout.triggered.connect(self.open_about)
         self.actionConfiguration.triggered.connect(self.open_setup)
         self.actionEdit_Configuration.triggered.connect(self.open_edit)
+        self.btnUpdate.clicked.connect(self.get_threads)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

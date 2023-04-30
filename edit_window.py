@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from configparser import ConfigParser
 import os
 from baseSettings import application_path
-from utilities import get_tm1_config, str_to_bool
+from utilities import get_tm1_config, str_to_bool, get_sections
 
 FILE = os.path.join(application_path, 'config.ini')
 
@@ -15,12 +15,8 @@ class Ui_edit_window(object):
 
     def update_config_list(self) -> None:
         self.cmbConfig.clear()
-        conf_list = ['']
-        confg = ConfigParser()
-        confg.read(FILE)
-        for section in confg.sections():
-            conf_list.append(section)
-        self.cmbConfig.addItems(conf_list)
+        sections = get_sections()
+        self.cmbConfig.addItems(sections)
 
     def retrieve_config(self) -> None:
         self.statusbar.showMessage("Save Configuration to apply changes")

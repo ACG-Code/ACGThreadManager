@@ -68,7 +68,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lnAddress_2">
+   <widget class="QLineEdit" name="lnGateway">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -78,7 +78,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lnAddress_3">
+   <widget class="QLineEdit" name="lnNamespcae">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -247,6 +247,16 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>cmbCloud</tabstop>
+  <tabstop>lnAddress</tabstop>
+  <tabstop>lnPort</tabstop>
+  <tabstop>lnServer</tabstop>
+  <tabstop>cmbSSL</tabstop>
+  <tabstop>lnNamespcae</tabstop>
+  <tabstop>lnGateway</tabstop>
+  <tabstop>btnSave</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>

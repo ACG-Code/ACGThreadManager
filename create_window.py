@@ -1,36 +1,35 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from configparser import ConfigParser
 from baseSettings import application_path
+from utilities import str_to_bool
 import os
 
 FILE = os.path.join(application_path, 'config.ini')
 
 
 class Ui_create_window(object):
+
     def __init__(self):
         self.config = {}
         self.conf = ConfigParser()
 
-    def str_to_bool(self, choice: str) -> bool:
-        return choice.lower() in ['t', 'true', 'y', 'yes', '1', 'on']
-
     def save_config(self) -> None:
         self.statusbar.showMessage("")
-        _cloud = self.str_to_bool(self.cmbCloud.currentText())
+        _cloud = str_to_bool(self.cmbCloud.currentText())
         _instance = self.lnServer.text()
         if _cloud:
             _base = self.lnAddress.text()
             if _base == '':
-                self.statusbar.showMessage("Address cannot be blank")
+                self.statusbar.showMessage("Address field cannot be blank")
             if _base.endswith('/'):
                 _base = _base[:-1]
-            _base_url = _base + '/tm1/api/' + self.lnServer.text()
+            _base_url = _base + r'/tm1/api' + _instance
         else:
-            _address = self.lnAddress.text()
-            _port = self.lnPort.text()
-            _ssl = self.str_to_bool(self.cmbSSL.currentText())
-            _namespace = self.lnAddress_3.text()
-            _gateway = self.lnAddress_2.text()
+            address = self.lnAddress.text()
+            port = int(self.lnPort.text())
+            ssl = self.cmbSSL.currentText()
+            gateway = self.lnGateway.text()
+            namespace = self.lnNamespcae.text()
         if _cloud:
             self.config = {
                 'cloud': True,
@@ -39,21 +38,22 @@ class Ui_create_window(object):
         else:
             self.config = {
                 'cloud': False,
-                'address': _address,
-                'port': int(_port),
-                'ssl': _ssl,
-                'gateway': _gateway,
-                'namespace': _namespace
+                'address': address,
+                'port': port,
+                'ssl': ssl,
+                'gateway': gateway,
+                'namespace': namespace
             }
         self.conf[_instance] = self.config
         self.conf.write(open(FILE, 'a'))
         self.statusbar.showMessage("Configuration Saved")
-        self.cmbCloud.setCurrentText('')
+        self.cmbCloud.currentText('')
         self.lnAddress.setText('')
         self.lnPort.setText('')
-        self.cmbSSL.setCurrentText('')
-        self.lnAddress_3.setText('')
-        self.lnAddress_2.setText('')
+        self.lnServer.setText('')
+        self.cmbSSL.currentText('')
+        self.lnGateway.setText('')
+        self.lnNamespcae.setText('')
 
     def setupUi(self, create_window):
         create_window.setObjectName("create_window")
@@ -78,12 +78,12 @@ class Ui_create_window(object):
         self.cmbSSL = QtWidgets.QComboBox(self.centralwidget)
         self.cmbSSL.setGeometry(QtCore.QRect(530, 140, 151, 22))
         self.cmbSSL.setObjectName("cmbSSL")
-        self.lnAddress_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lnAddress_2.setGeometry(QtCore.QRect(430, 240, 341, 20))
-        self.lnAddress_2.setObjectName("lnAddress_2")
-        self.lnAddress_3 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lnAddress_3.setGeometry(QtCore.QRect(20, 240, 341, 20))
-        self.lnAddress_3.setObjectName("lnAddress_3")
+        self.lnGateway = QtWidgets.QLineEdit(self.centralwidget)
+        self.lnGateway.setGeometry(QtCore.QRect(430, 240, 341, 20))
+        self.lnGateway.setObjectName("lnGateway")
+        self.lnNamespcae = QtWidgets.QLineEdit(self.centralwidget)
+        self.lnNamespcae.setGeometry(QtCore.QRect(20, 240, 341, 20))
+        self.lnNamespcae.setObjectName("lnNamespcae")
         self.btnSave = QtWidgets.QPushButton(self.centralwidget)
         self.btnSave.setGeometry(QtCore.QRect(330, 310, 111, 41))
         self.btnSave.setObjectName("btnSave")
@@ -147,6 +147,13 @@ class Ui_create_window(object):
 
         self.retranslateUi(create_window)
         QtCore.QMetaObject.connectSlotsByName(create_window)
+        create_window.setTabOrder(self.cmbCloud, self.lnAddress)
+        create_window.setTabOrder(self.lnAddress, self.lnPort)
+        create_window.setTabOrder(self.lnPort, self.lnServer)
+        create_window.setTabOrder(self.lnServer, self.cmbSSL)
+        create_window.setTabOrder(self.cmbSSL, self.lnNamespcae)
+        create_window.setTabOrder(self.lnNamespcae, self.lnGateway)
+        create_window.setTabOrder(self.lnGateway, self.btnSave)
         bools = ['', 'True', 'False']
         self.cmbCloud.addItems(bools)
         self.cmbSSL.addItems(bools)
@@ -168,7 +175,6 @@ import resources_rc
 
 
 if __name__ == "__main__":
-    #TODO Tab Order, change names of Namespace and Gateway
     import sys
     app = QtWidgets.QApplication(sys.argv)
     create_window = QtWidgets.QMainWindow()
