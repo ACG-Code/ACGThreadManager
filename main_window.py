@@ -1,11 +1,10 @@
-import os.path
-from TM1py import TM1Service
+import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
-from baseSettings import application_path, APP_NAME
-from configparser import ConfigParser
+from TM1py import TM1Service
+
+from about_window import Ui_about_window
 from create_window import Ui_create_window
 from edit_window import Ui_edit_window
-from about_window import Ui_about_window
 from utilities import get_sections, retrieve_tm1_config
 
 
@@ -46,7 +45,8 @@ class Ui_MainWindow(object):
             threads = tm1.monitoring.get_threads()
             for thread in threads:
                 thread_list.append(thread)
-        print(thread_list)
+        df = pd.DataFrame(thread_list)
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -179,7 +179,6 @@ class Ui_MainWindow(object):
         self.actionConfiguration.setText(_translate("MainWindow", "Create Configuration"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionEdit_Configuration.setText(_translate("MainWindow", "Edit Configuration"))
-import resources_rc
 
 
 if __name__ == "__main__":

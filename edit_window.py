@@ -1,6 +1,8 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from configparser import ConfigParser
 import os
+from configparser import ConfigParser
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 from baseSettings import application_path
 from utilities import get_tm1_config, str_to_bool, get_sections
 
@@ -169,7 +171,6 @@ class Ui_edit_window(object):
         self.label_6.setText(_translate("edit_window", "CAM Namespace ID"))
         self.label_7.setText(_translate("edit_window", "SSO Gateway"))
         self.label_8.setText(_translate("edit_window", "Choose Existing Configuration"))
-import resources_rc
 
 
 if __name__ == "__main__":

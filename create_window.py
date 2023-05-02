@@ -1,8 +1,10 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+import os
 from configparser import ConfigParser
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 from baseSettings import application_path
 from utilities import str_to_bool
-import os
 
 FILE = os.path.join(application_path, 'config.ini')
 
@@ -171,7 +173,6 @@ class Ui_create_window(object):
         self.label_5.setText(_translate("create_window", "Use SSL"))
         self.label_6.setText(_translate("create_window", "CAM Namespace ID"))
         self.label_7.setText(_translate("create_window", "SSO Gateway"))
-import resources_rc
 
 
 if __name__ == "__main__":

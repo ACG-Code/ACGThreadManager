@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from baseSettings import APP_VERSION
 
 
@@ -25,7 +26,6 @@ class Ui_about_window(object):
         _translate = QtCore.QCoreApplication.translate
         about_window.setWindowTitle(_translate("about_window", "ACG Thread Manager - About"))
         self.label.setText(_translate("about_window", f"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">ACG Thread Manager {APP_VERSION}</span></p><p align=\"center\"><br/></p><p align=\"center\"><span style=\" font-size:12pt;\">© 2023 Application Consulting Group</span></p><p align=\"center\"><br/></p><p align=\"center\"><span style=\" font-size:12pt;\">http://www.acgi.com</span></p></body></html>"))
-import resources_rc
 
 
 if __name__ == "__main__":
