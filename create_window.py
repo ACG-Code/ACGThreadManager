@@ -3,10 +3,13 @@ from configparser import ConfigParser
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import resources_rc
 from baseSettings import application_path
 from utilities import str_to_bool
 
 FILE = os.path.join(application_path, 'config.ini')
+# This line is to force the retaining of the resources_rc import
+var = resources_rc
 
 
 class Ui_create_window(object):

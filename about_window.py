@@ -1,6 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import resources_rc
 from baseSettings import APP_VERSION
+
+# This line is to force the retaining of the resources_rc import
+var = resources_rc
 
 
 class Ui_about_window(object):

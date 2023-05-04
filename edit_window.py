@@ -3,9 +3,12 @@ from configparser import ConfigParser
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import resources_rc
 from baseSettings import application_path
 from utilities import get_tm1_config, str_to_bool, get_sections
 
+# This line is to for the retaining of the resources_rc import
+var = resources_rc
 FILE = os.path.join(application_path, 'config.ini')
 
 

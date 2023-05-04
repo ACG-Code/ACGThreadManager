@@ -1,11 +1,38 @@
 import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from TM1py import TM1Service
-
+from PyQt5.QtCore import Qt, QAbstractTableModel
+import resources_rc
 from about_window import Ui_about_window
 from create_window import Ui_create_window
 from edit_window import Ui_edit_window
 from utilities import get_sections, retrieve_tm1_config
+# This line is to force the retaining of the resources_rc import
+var = resources_rc
+
+
+class pandasModel(QAbstractTableModel):
+
+    def __init__(self, data):
+        QAbstractTableModel.__init__(self)
+        self._data = data
+
+    def rowCount(self, parent=None):
+        return self._data.shape[0]
+
+    def columnCount(self, parent=None):
+        return self._data.shape[1]
+
+    def data(self, index, role=Qt.DisplayRole):
+        if index.isValid():
+            if role == Qt.DisplayRole:
+                return str(self._data.iloc[index.row(), index.column()])
+        return None
+
+    def headerData(self, col, orientation, role):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return self._data.columns[col]
+        return None
 
 
 class Ui_MainWindow(object):
@@ -46,6 +73,9 @@ class Ui_MainWindow(object):
             for thread in threads:
                 thread_list.append(thread)
         df = pd.DataFrame(thread_list)
+        self.model = pandasModel(df)
+        self.tblThreads.setModel(self.model)
+
 
 
     def setupUi(self, MainWindow):
@@ -179,6 +209,7 @@ class Ui_MainWindow(object):
         self.actionConfiguration.setText(_translate("MainWindow", "Create Configuration"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionEdit_Configuration.setText(_translate("MainWindow", "Edit Configuration"))
+
 
 
 if __name__ == "__main__":
