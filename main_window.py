@@ -76,7 +76,8 @@ class Ui_MainWindow(object):
         self.model = pandasModel(df)
         self.tblThreads.setModel(self.model)
 
-
+    def cancel_thread(self) -> None:
+        self.statusbar.showMessage("Cancel clicked")
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -187,6 +188,7 @@ class Ui_MainWindow(object):
         self.actionConfiguration.triggered.connect(self.open_setup)
         self.actionEdit_Configuration.triggered.connect(self.open_edit)
         self.btnUpdate.clicked.connect(self.get_threads)
+        self.pushButton.clicked.connect(self.cancel_thread)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
