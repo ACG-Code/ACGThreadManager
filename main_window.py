@@ -37,6 +37,9 @@ class pandasModel(QAbstractTableModel):
 
 class Ui_MainWindow(object):
 
+    def __init__(self):
+        self._config = {}
+
     def open_about(self) -> None:
         self.window = QtWidgets.QDialog()
         self.ui = Ui_about_window()
@@ -62,13 +65,13 @@ class Ui_MainWindow(object):
 
     def get_threads(self) -> None:
         _instance = self.cmbConfig.currentText()
-        _dict = retrieve_tm1_config(_instance)
+        self._config = retrieve_tm1_config(_instance)
         _user = self.lnUser.text()
         _password = self.lnPassword.text()
         thread_list = []
-        _dict['user'] = _user
-        _dict['password'] = _password
-        with TM1Service(**_dict) as tm1:
+        self._config['user'] = _user
+        self._config['password'] = _password
+        with TM1Service(**self._config) as tm1:
             threads = tm1.monitoring.get_threads()
             for thread in threads:
                 thread_list.append(thread)
@@ -79,7 +82,10 @@ class Ui_MainWindow(object):
     def cancel_thread(self) -> None:
         row_data = self.get_selected_row()
         if row_data:
-            self.statusbar.showMessage(row_data[0][0])
+            self.kill_selected_threads(selection="thread", thread=row_data[0][0])
+            self.statusbar.showMessage("Thread cancelled")
+        self.get_threads()
+        self.statusbar.showMessage("Ready")
 
     def get_selected_row(self) -> list or None:
         rows = {index.row() for index in self.tblThreads.selectionModel().selectedIndexes()}
@@ -98,7 +104,21 @@ class Ui_MainWindow(object):
     def user_kill(self) -> None:
         row_data = self.get_selected_row()
         if row_data:
-            self.statusbar.showMessage(row_data[0][2])
+            self.kill_selected_threads(selection='user', thread=row_data[0][2])
+            self.statusbar.showMessage("Thread cancelled")
+        self.get_threads()
+        self.statusbar.showMessage("Ready")
+
+    def kill_selected_threads(self, selection: str, thread: str):
+        with TM1Service(**self._config) as tm1:
+            all_threads = tm1.monitoring.get_threads()
+            for _thread in all_threads:
+                if selection == 'user':
+                    if _thread['Name'] == thread:
+                        tm1.monitoring.cancel_thread(_thread['ID'])
+                elif selection == 'thread':
+                    if _thread['ID'] == int(thread):
+                        tm1.monitoring.cancel_thread(_thread['ID'])
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
