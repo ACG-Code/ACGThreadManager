@@ -77,7 +77,28 @@ class Ui_MainWindow(object):
         self.tblThreads.setModel(self.model)
 
     def cancel_thread(self) -> None:
-        self.statusbar.showMessage("Cancel clicked")
+        row_data = self.get_selected_row()
+        if row_data:
+            self.statusbar.showMessage(row_data[0][0])
+
+    def get_selected_row(self) -> list or None:
+        rows = {index.row() for index in self.tblThreads.selectionModel().selectedIndexes()}
+        if rows:
+            output = []
+            for row in rows:
+                row_data = []
+                for column in range(self.tblThreads.model().columnCount()):
+                    index = self.tblThreads.model().index(row, column)
+                    row_data.append(index.data())
+                output.append(row_data)
+            return output
+        else:
+            return None
+
+    def user_kill(self) -> None:
+        row_data = self.get_selected_row()
+        if row_data:
+            self.statusbar.showMessage(row_data[0][2])
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -134,12 +155,6 @@ class Ui_MainWindow(object):
         self.tblThreads = QtWidgets.QTableView(self.groupBox)
         self.tblThreads.setGeometry(QtCore.QRect(10, 130, 771, 192))
         self.tblThreads.setObjectName("tblThreads")
-        self.lnThreadID = QtWidgets.QLineEdit(self.groupBox)
-        self.lnThreadID.setGeometry(QtCore.QRect(10, 80, 151, 31))
-        self.lnThreadID.setObjectName("lnThreadID")
-        self.lnUserID = QtWidgets.QLineEdit(self.groupBox)
-        self.lnUserID.setGeometry(QtCore.QRect(630, 80, 151, 31))
-        self.lnUserID.setObjectName("lnUserID")
         self.label_4 = QtWidgets.QLabel(self.groupBox)
         self.label_4.setGeometry(QtCore.QRect(10, 50, 151, 21))
         font = QtGui.QFont()
@@ -158,9 +173,12 @@ class Ui_MainWindow(object):
         self.label_5.setFont(font)
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
         self.label_5.setObjectName("label_5")
-        self.pushButton = QtWidgets.QPushButton(self.groupBox)
-        self.pushButton.setGeometry(QtCore.QRect(310, 80, 151, 31))
-        self.pushButton.setObjectName("pushButton")
+        self.btnThreadKill = QtWidgets.QPushButton(self.groupBox)
+        self.btnThreadKill.setGeometry(QtCore.QRect(20, 80, 151, 31))
+        self.btnThreadKill.setObjectName("btnThreadKill")
+        self.btnUserKill = QtWidgets.QPushButton(self.groupBox)
+        self.btnUserKill.setGeometry(QtCore.QRect(620, 80, 151, 31))
+        self.btnUserKill.setObjectName("btnUserKill")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -188,7 +206,8 @@ class Ui_MainWindow(object):
         self.actionConfiguration.triggered.connect(self.open_setup)
         self.actionEdit_Configuration.triggered.connect(self.open_edit)
         self.btnUpdate.clicked.connect(self.get_threads)
-        self.pushButton.clicked.connect(self.cancel_thread)
+        self.btnThreadKill.clicked.connect(self.cancel_thread)
+        self.btnUserKill.clicked.connect(self.user_kill)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -200,12 +219,13 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "ACG Thread Manager"))
         self.label.setText(_translate("MainWindow", "Choose Configuration"))
         self.label_2.setText(_translate("MainWindow", "Username"))
-        self.label_3.setText(_translate("MainWindow", "Passsword"))
+        self.label_3.setText(_translate("MainWindow", "Password"))
         self.btnUpdate.setText(_translate("MainWindow", "Update Threads"))
         self.groupBox.setTitle(_translate("MainWindow", "Threads"))
         self.label_4.setText(_translate("MainWindow", "Thread ID"))
         self.label_5.setText(_translate("MainWindow", "User ID"))
-        self.pushButton.setText(_translate("MainWindow", "Cancel Threads"))
+        self.btnThreadKill.setText(_translate("MainWindow", "Cancel Thread"))
+        self.btnUserKill.setText(_translate("MainWindow", "Cancel User Threads"))
         self.menuSetup.setTitle(_translate("MainWindow", "Setup"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionConfiguration.setText(_translate("MainWindow", "Create Configuration"))
